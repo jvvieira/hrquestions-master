@@ -1,5 +1,7 @@
 ﻿<!-- table of contents -->
-<table>
+
+<span ng-show="loading">Loading....</span>
+<table ng-show="!loading">
     <!-- table:header -->
     <tr>
       <th>
@@ -17,14 +19,6 @@
     </tr>
 
     <!-- table:body -->
-    <!--
-
-    When the list is still loading (first load or any request made to server to fetch a page):
-    - A loading indicator should be displayed instead of the table body to indicate it
-    - It can be any kind of indicator (text, icon, img, etc).
-    - Dont worry about styling (looking pretty, centralized, etc) it just has to show that the app is still active while the request is being made
-
-    -->
     <tr ng-repeat="todo in todos track by $index">
         <td>{{todo.id}}</td>
         <td>{{todo.task}}</td>

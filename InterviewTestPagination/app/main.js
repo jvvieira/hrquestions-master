@@ -6,6 +6,8 @@
         .directive("todoPaginatedList", [todoPaginatedList])
         .directive("pagination", [pagination]);
 
+
+
     /**
      * Directive definition function of 'todoPaginatedList'.
      * 
@@ -28,11 +30,12 @@
             $scope.todos = [];
             var page = 1;
             var size = 20;
-
+            $scope.loading = true;
             $scope.propertyName = "creationDate";
             $scope.reverse = true;
 
             $scope.sortBy = function (propertyName) {
+                $scope.loading = true;
                 $scope.reverse = (propertyName !== null && $scope.propertyName === propertyName)
                     ? !$scope.reverse : false;
                 $scope.propertyName = propertyName;
@@ -43,7 +46,12 @@
                         orderBy: $scope.propertyName,
                         reverse: $scope.reverse
                     }
-                }).then(response => $scope.todos = response.data);
+                }).then(
+                    function (response) {
+                        $scope.todos = response.data;
+                        $scope.loading = false;
+                    }
+                );
             };
 
             $http.get("api/Todo/Paginado/", {
@@ -53,10 +61,14 @@
                     orderBy: $scope.propertyName,
                     reverse: $scope.reverse
                 }
-            }).then(response => $scope.todos = response.data);
+            }).then(function (response) {
+                $scope.todos = response.data;
+                $scope.loading = false;
+            });
 
 
             $rootScope.$on("changePageSize", function (ev, args) {
+                $scope.loading = true;
                 if (args.val == "all") {
                     $http.get("api/Todo/Todos").then(response => $scope.todos = response.data);
                 } else {
@@ -68,11 +80,15 @@
                             orderBy: $scope.propertyName,
                             reverse: $scope.reverse
                         }
-                    }).then(response => $scope.todos = response.data);
+                    }).then(function (response) {
+                        $scope.todos = response.data;
+                        $scope.loading = false;
+                    });
                 }
             });
 
             $rootScope.$on("changePage", function (ev, args) {
+                $scope.loading = true;
                 page = args.val;
                 $http.get("api/Todo/Paginado/", {
                     params: {
@@ -81,7 +97,10 @@
                         orderBy: $scope.propertyName,
                         reverse: $scope.reverse
                     }
-                }).then(response => $scope.todos = response.data);
+                }).then(function (response) {
+                    $scope.todos = response.data;
+                    $scope.loading = false;
+                });
             }
             );
 

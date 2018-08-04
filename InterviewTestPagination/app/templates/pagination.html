@@ -5,11 +5,12 @@
         <select ng-change="changePageSize()" ng-init="infos.pageSize = pageFilters[1]" ng-model="infos.pageSize" ng-options="level for level in pageFilters"></select>
     </div>
     <div>
-        <button ng-click="firstPage()">&lt;&lt;</button> <!-- 'go to first page' button -->
-        <button ng-click="antPage()">&lt;</button> <!-- 'go to previous page' button: can't go lower than 1 -->
-        Page <input type="number" value="{{infos.page}}" ng-init="infos.page=1" min="1" ng-model="infos.page" ng-change="changePage()"/> <!-- input to select page to go to: go to page when input changes value --> of ??total page count here?? <!-- number of pages -->
-
-        <button ng-click="nextPage()">&gt;</button> <!-- 'go to next page' button: can't go higher than last page number -->
+        <button ng-click="firstPage()">&lt;&lt;</button>
+        <button ng-click="antPage()">&lt;</button>
+        Page 
+        <input type="number" value="{{infos.page}}" ng-init="infos.page=1" min="1" ng-model="infos.page" ng-change="changePage()"/> 
+        <!-- input to select page to go to: go to page when input changes value --> of ??total page count here?? <!-- number of pages -->
+        <button ng-click="nextPage()">&gt;</button>
         <button>&gt;&gt;</button> <!-- 'go to last page' button -->
     </div>
     <div>
