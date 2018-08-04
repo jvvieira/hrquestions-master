@@ -21,7 +21,7 @@ namespace InterviewTestPagination.Controllers
         [HttpGet]
         public IEnumerable<Todo> Todos()
         {
-            return _todoService.Repository.All();
+            return _todoService.List();
         }
 
         [HttpGet]
@@ -62,12 +62,6 @@ namespace InterviewTestPagination.Controllers
                 default:
                     return _todoService.List().OrderBy(item => item.CreatedDate).Skip(size * page).Take(size);
             }
-        }
-
-        [HttpGet]
-        public int getTotalItens()
-        {
-            return _todoService.Repository.All().Count();
         }
     }
 }

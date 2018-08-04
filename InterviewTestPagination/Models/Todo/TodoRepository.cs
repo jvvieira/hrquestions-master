@@ -21,7 +21,7 @@ namespace InterviewTestPagination.Models.Todo {
         static TodoRepository() {
             // initializing datasource
             var startDate = DateTime.Today;
-            for (var i = 1; i <= 105; i++) {
+            for (var i = 1; i <= 115; i++) {
                 var createdDate = startDate.AddDays(i);
                 DataSource[i] = new Todo(id: i, task: "Dont forget to do " + i, createdDate: createdDate);
             }
