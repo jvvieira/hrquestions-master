@@ -20,14 +20,71 @@
             restrict: "E", // example setup as an element only
             templateUrl: "app/templates/todo.list.paginated.html",
             scope: {}, // example empty isolate scope
-            controller: ["$scope", "$http", controller],
+            controller: ["$scope", "$http", "$rootScope", controller],
             link: link
         };
 
-        function controller($scope, $http) { // example controller creating the scope bindings
+        function controller($scope, $http, $rootScope) {
             $scope.todos = [];
-            // example of xhr call to the server's 'RESTful' api
-            $http.get("api/Todo/Todos").then(response => $scope.todos = response.data);
+            var page = 1;
+            var size = 20;
+
+            $scope.propertyName = "creationDate";
+            $scope.reverse = true;
+
+            $scope.sortBy = function (propertyName) {
+                $scope.reverse = (propertyName !== null && $scope.propertyName === propertyName)
+                    ? !$scope.reverse : false;
+                $scope.propertyName = propertyName;
+                $http.get("api/Todo/Paginado/", {
+                    params: {
+                        size: size,
+                        page: page,
+                        orderBy: $scope.propertyName,
+                        reverse: $scope.reverse
+                    }
+                }).then(response => $scope.todos = response.data);
+            };
+
+            $http.get("api/Todo/Paginado/", {
+                params: {
+                    size: size,
+                    page: page,
+                    orderBy: $scope.propertyName,
+                    reverse: $scope.reverse
+                }
+            }).then(response => $scope.todos = response.data);
+
+
+            $rootScope.$on("changePageSize", function (ev, args) {
+                if (args.val == "all") {
+                    $http.get("api/Todo/Todos").then(response => $scope.todos = response.data);
+                } else {
+                    size = args.val;
+                    $http.get("api/Todo/Paginado/", {
+                        params: {
+                            size: size,
+                            page: page,
+                            orderBy: $scope.propertyName,
+                            reverse: $scope.reverse
+                        }
+                    }).then(response => $scope.todos = response.data);
+                }
+            });
+
+            $rootScope.$on("changePage", function (ev, args) {
+                page = args.val;
+                $http.get("api/Todo/Paginado/", {
+                    params: {
+                        size: size,
+                        page: page,
+                        orderBy: $scope.propertyName,
+                        reverse: $scope.reverse
+                    }
+                }).then(response => $scope.todos = response.data);
+            }
+            );
+
         }
 
         function link(scope, element, attrs) { }
@@ -50,11 +107,41 @@
             restrict: "E", // example setup as an element only
             templateUrl: "app/templates/pagination.html",
             scope: {}, // example empty isolate scope
-            controller: ["$scope", controller],
+            controller: ["$scope", "$http", "$rootScope", controller],
             link: link
         };
 
-        function controller($scope) { }
+        function controller($scope, $http, $rootScope) {
+            $scope.infos = {};
+            $scope.totalItens = 0;
+            $scope.pageFilters = [10, 20, 30, 'all'];
+
+            $scope.changePageSize = function () {
+                $rootScope.$broadcast("changePageSize", { val: $scope.infos.pageSize });
+            }
+
+            $scope.changePage = function () {
+                $rootScope.$broadcast("changePage", { val: $scope.infos.page });
+            }
+
+            $scope.firstPage = function () {
+                $scope.infos.page = 1;
+                $rootScope.$broadcast("changePage", { val: 1 });
+            }
+
+            $scope.antPage = function () {
+                if ($scope.infos.page > 1) {
+                    $scope.infos.page = $scope.infos.page - 1;
+                    $rootScope.$broadcast("changePage", { val: $scope.infos.page });
+                }
+            }
+
+            $scope.nextPage = function () {
+                $scope.infos.page = $scope.infos.page + 1;
+                $rootScope.$broadcast("changePage", { val: $scope.infos.page });
+
+            }
+        }
 
         function link(scope, element, attrs) { }
 
